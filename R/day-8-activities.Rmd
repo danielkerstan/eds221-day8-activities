@@ -1,0 +1,109 @@
+---
+title: "Worst possible graph"
+author: "Daniel Kerstan"
+date: "8/18/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+library(janitor)
+```
+Task 1
+
+```{r}
+space <- read_csv(here("data", "space_launches.csv"))
+```
+```{r}
+space_bad_graph <- ggplot(data = space, aes(x = launch_year, y = mission)) +
+  geom_point() +
+  theme(
+    panel.grid = element_blank(),
+    plot.background = element_rect(fill = "cyan4"),
+    panel.background = element_rect(fill = "orange"),
+    axis.text.x = element_text(color = "orange"),
+    axis.title = element_text(color = "white"))
+
+space_bad_graph
+
+ggsave(here("space_bad_graph.jpg"), plot = space_bad_graph)
+    
+
+```
+
+
+
+
+Task 2
+```{r}
+san_fran <- read_csv(here("data", "San_Francisco_Communitywide_Greenhouse_Gas_Inventory.csv"))
+
+san_fran <- clean_names(san_fran)
+```
+
+```{r}
+san_fran_summary1 <- san_fran %>% 
+  select(emissions_mt_co2e, sector_general) %>% 
+  group_by(sector_general) %>% 
+  summarize(emissions = sum(emissions_mt_co2e, na.rm = TRUE))
+```
+
+```{r}
+san_fran_summary_2 <- san_fran %>% 
+  select(calendar_year, commodity_type, emissions_mt_co2e) %>% 
+  group_by(calendar_year,commodity_type) %>% 
+  summarize(emissions = sum(emissions_mt_co2e, na.rm = TRUE))
+```
+```{r}
+san_fran_subset <- san_fran %>% 
+  filter(calendar_year >= 2005,
+         str_detect(sector_detail2, pattern = "PG&E")) %>%
+  select(calendar_year, sector_detail2, emissions_mt_co2e)
+
+  
+```
+
+Task 3
+
+```{r}
+#san_fran_new <- san_fran %>% mutate(calendar_year = lubridate::year(calendar_year))
+```
+
+
+```{r}
+san_fran_data <- san_fran %>% 
+  select(calendar_year, sector_detail1, emissions_mt_co2e) %>% 
+  filter(calendar_year == 2019) %>% 
+  group_by(sector_detail1, calendar_year) %>% 
+  summarize(total_emissions_mt_co2e = sum(emissions_mt_co2e, na.rm = TRUE))
+```
+
+```{r}
+san_fran_data_new <- san_fran_data %>% 
+  mutate(calendar_year = as.character(calendar_year))
+
+
+
+```
+
+```{r}
+
+
+san_fran_graph <- ggplot(san_fran_data_new, aes(x = total_emissions_mt_co2e, y = forcats::fct_reorder(sector_detail1,total_emissions_mt_co2e))) +
+  geom_col(fill = "black", color = "black") +
+  labs(title = "CO2 emissions in San Francisco for the year 2019", x = "Metric tons of carbon dioxide equivalent", y = "Sector") +
+  theme(panel.grid = element_blank(),
+        panel.background = element_blank(),
+        axis.title = element_text(color = "black")) +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_x_continuous(limits = c(0, 1600000))
+  
+
+
+
+san_fran_graph
+ggsave(here("san_fran_graph.jpg"), plot = san_fran_graph)
+```
+
