@@ -1,5 +1,5 @@
 ---
-title: "Worst possible graph"
+title: "Best and worst possible graph"
 author: "Daniel Kerstan"
 date: "8/18/2021"
 output: html_document
@@ -14,21 +14,21 @@ library(janitor)
 Task 1
 
 ```{r}
-space <- read_csv(here("data", "space_launches.csv"))
+#space <- read_csv(here("data", "space_launches.csv"))
 ```
 ```{r}
-space_bad_graph <- ggplot(data = space, aes(x = launch_year, y = mission)) +
-  geom_point() +
-  theme(
-    panel.grid = element_blank(),
-    plot.background = element_rect(fill = "cyan4"),
-    panel.background = element_rect(fill = "orange"),
-    axis.text.x = element_text(color = "orange"),
-    axis.title = element_text(color = "white"))
+#space_bad_graph <- ggplot(data = space, aes(x = launch_year, y = mission)) +
+  #geom_point() +
+  #theme(
+   # panel.grid = element_blank(),
+   # plot.background = element_rect(fill = "cyan4"),
+   # panel.background = element_rect(fill = "orange"),
+   # axis.text.x = element_text(color = "orange"),
+    #axis.title = element_text(color = "white"))
 
-space_bad_graph
+#space_bad_graph
 
-ggsave(here("space_bad_graph.jpg"), plot = space_bad_graph)
+#ggsave(here("space_bad_graph.jpg"), plot = space_bad_graph)
     
 
 ```
@@ -88,7 +88,7 @@ san_fran_data_new <- san_fran_data %>%
 
 ```
 
-```{r}
+```{r, fig.alt="bar graph showing the CO2 emissions in San Francisco for the year 2019 by sector, showing the greatest emissions from cars and trucks and the least emissions coming from the wastewater sector"}
 
 
 san_fran_graph <- ggplot(san_fran_data_new, aes(x = total_emissions_mt_co2e, y = forcats::fct_reorder(sector_detail1,total_emissions_mt_co2e))) +
@@ -106,4 +106,9 @@ san_fran_graph <- ggplot(san_fran_data_new, aes(x = total_emissions_mt_co2e, y =
 san_fran_graph
 ggsave(here("san_fran_graph.jpg"), plot = san_fran_graph)
 ```
+
+added alt text:
+
+Graph showing CO2 emissions for San Francisco for the year 2019
+
 
